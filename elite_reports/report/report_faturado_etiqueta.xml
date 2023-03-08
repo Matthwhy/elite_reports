@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <report
+        id="report_etiquetas_faturado"
+        string="Etiquetas Faturado"
+        model="account.move"
+        report_type="qweb-pdf"
+        file="elite_reports.main_etiqueta_faturado"
+        name="elite_reports.main_etiqueta_faturado" />
+
+    <record id="paperformat_etiqueta_faturado" model="report.paperformat">
+          <field name="name">Etiqueta Faturado</field>
+          <field name="default" eval="True" />
+          <field name="format">custom</field>
+          <field name="page_height">120</field>
+          <field name="page_width">125</field>
+          <field name="orientation">Portrait</field>
+          <field name="margin_top">3</field>
+          <field name="margin_bottom">3</field>
+          <field name="margin_left">3</field>
+          <field name="margin_right">3</field>
+          <field name="header_line" eval="False" />
+          <field name="header_spacing">10</field>
+      </record>
+
+    <record id="report_etiquetas_faturado" model="ir.actions.report">
+        <field name="paperformat_id" ref="paperformat_etiqueta_faturado"/>
+        <field name="name">Etiqueta Faturado</field>
+        <field name="print_report_name">'Etiqueta Faturado'</field>
+
+    </record>
+
+    <template id="report_etiqueta_faturado">
+        <b t-foreach="range(o.quantidade_volumes)" t-as="index">
+            <div class="page">
+                <div class="oe_structure"/>
+                <style type="text/css">
+                    span {
+                        font-size: 25px;
+                        font-weight: normal;
+                    }
+                    b {
+                        font-size: 25px;
+                    }
+                    
+                </style>
+                <br/><br/>
+                <div style="page-break-after: always; line-height: 1.8">
+                    <span>VOL:</span>
+                        <b t-esc="index + 1"/> / <b t-field="o.quantidade_volumes"/>
+
+                    <div class="row">
+                        <div class="col-8">
+                            <span>Nota Fiscal: </span>
+                                <b t-raw="o.nfe_number"/><br/>
+                        </div>
+
+                    </div>
+                    <span>Cliente: </span>
+                        <b t-raw="o.partner_id.name"/><br/>
+
+                    
+                    <b t-if="o.carrier_partner_id.name">
+                        <b t-raw="o.carrier_partner_id.name"/><br/>
+                    </b>
+                    <b t-else="">
+                        <span> - </span><br/>
+                    </b>
+
+
+                </div>
+            </div>
+        </b>
+    </template>
+
+
+     <template id="main_etiqueta_faturado">
+        <b t-call="web.basic_layout">
+            <b t-foreach="docs" t-as="o">
+                <b t-call="elite_reports.report_etiqueta_faturado"/>
+            </b>
+        </b>
+    </template>
+
+</odoo>
